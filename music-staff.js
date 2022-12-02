@@ -34,6 +34,28 @@ function drawTimeline() {
     };
   }
 
+  let wholeNoteLoaded = false;
+  const wholeNote = new Image();
+
+  function loadWholeNote(cb) {
+    wholeNote.src = isDarkMode ? 'images/whole-note-white.svg' : 'images/whole-note-black.svg';
+    wholeNote.onload = function() {
+      wholeNoteLoaded = true;
+      cb();
+    };
+  }
+
+  let halfNoteLoaded = false;
+  const halfNote = new Image();
+
+  function loadHalfNote(cb) {
+    halfNote.src = isDarkMode ? 'images/half-note-white.svg' : 'images/half-note-black.svg';
+    halfNote.onload = function() {
+      halfNoteLoaded = true;
+      cb();
+    };
+  }
+
   let quarterNoteLoaded = false;
   const quarterNote = new Image();
 
@@ -59,6 +81,44 @@ function drawTimeline() {
 
     if (!bassClefLoaded) {
       loadBassClef(draw);
+    }
+    else {
+      draw();
+    }
+  }
+
+  function drawWholeNote(x, y) {
+    const draw = () => {
+      const height = canvas.height / 2;
+      const width = wholeNote.height * (height / wholeNote.width);
+      const x = x - timeLineX;
+
+      ctx.setTransform(1, 0, 0, 1, x, y);
+      ctx.moveTo(0, 0);
+      ctx.drawImage(wholeNote, 0, 0, height, width);
+    };
+
+    if (!wholeNoteLoaded) {
+      loadWholeNote(draw);
+    }
+    else {
+      draw();
+    }
+  }
+
+  function drawHalfNote(x, y) {
+    const draw = () => {
+      const height = canvas.height / 2;
+      const width = halfNote.height * (height / halfNote.width);
+      const x = x - timeLineX;
+
+      ctx.setTransform(1, 0, 0, 1, x, y);
+      ctx.moveTo(0, 0);
+      ctx.drawImage(halfNote, 0, 0, height, width);
+    };
+
+    if (!halfNoteLoaded) {
+      loadHalfNote(draw);
     }
     else {
       draw();
