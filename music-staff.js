@@ -139,7 +139,7 @@ function drawTimeline() {
     ctx.stroke();
     ctx.closePath();
 
-    noteXPos += measurePadding * 2 ;
+    noteXPos += measurePadding * 2;
   }
 
   function generateMeasures() {
