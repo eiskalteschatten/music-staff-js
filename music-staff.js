@@ -25,7 +25,7 @@ function drawTimeline() {
   const bassClef = new Image();
 
   function loadBassClef(cb) {
-    bassClef.src = 'images/bass-clef.svg';
+    bassClef.src = isDarkMode ? 'images/bass-clef-white.svg' : 'images/bass-clef-black.svg';
     bassClef.onload = function() {
       bassClefLoaded = true;
       cb();
