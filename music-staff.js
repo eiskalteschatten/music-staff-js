@@ -22,10 +22,12 @@ function drawTimeline() {
   const lineHeightOffset = 1;
   const lineHeightOffsetWithStaffPadding = staffPadding + lineHeightOffset;
   const numberOfLines = 5;
+
   // * 2 for the number of spaces between the lines
   // -2 to exclude the positions outside of the 5 staff lines:
   // Below an offset of 1 is used in the position calculation to exclude the space above the first line
   const maxNotePositions = (numberOfLines * 2) - 2;
+
   const distanceBetweenLines = (canvas.height - staffPadding) / numberOfLines;
   const distanceBetweenNotes = 60;
   const measurePadding = 50;
