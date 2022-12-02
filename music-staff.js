@@ -69,11 +69,15 @@ function drawTimeline() {
     const width = Math.floor(image.height * (height / image.width));
     const flipNote = flipOffset && position <= 5;
 
+    const x = flipNote
+      ? noteXPos + (image.width * .5)
+      : noteXPos;
+
     const y = flipNote
       ? Math.floor(((distanceBetweenLines / 2) * position) + (image.height * flipOffset)) - lineHeightOffsetWithStaffPadding
       : Math.floor(((distanceBetweenLines / 2) * position) - (image.height * imageOffset)) + lineHeightOffsetWithStaffPadding;
 
-    ctx.setTransform(1, 0, 0, 1, noteXPos, y);
+    ctx.setTransform(1, 0, 0, 1, x, y);
 
     if (flipNote) {
       ctx.rotate(Math.PI);
