@@ -189,7 +189,6 @@ function drawTimeline() {
     }
 
     drawBassClef();
-    generateMeasures();
   }
 
   function drawGradient() {
@@ -211,6 +210,7 @@ function drawTimeline() {
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawStaff();
+    generateMeasures();
     drawGradient();
     timeLineX += 1;
     // raf = window.requestAnimationFrame(animate);
@@ -229,8 +229,8 @@ function drawTimeline() {
 
 
   // Stop the animation after 5 minutes
-  // setTimeout(() => cancelAnimationFrame(raf), 300000);
-  setTimeout(() => cancelAnimationFrame(raf), 500);
+  setTimeout(() => cancelAnimationFrame(raf), 300000);
+  // setTimeout(() => cancelAnimationFrame(raf), 500);
 }
 
 window.onload = drawTimeline;
