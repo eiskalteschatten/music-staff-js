@@ -171,7 +171,6 @@ function drawTimeline() {
       } while (numberOfNotes < beatsPerMeasure);
 
       drawMeasure(measure);
-break;
     }
   }
 
@@ -222,7 +221,6 @@ break;
       halfNoteLoaded &&
       quarterNoteLoaded
     ) {
-      // raf = window.requestAnimationFrame(animate);
       animate();
     }
   }
