@@ -18,8 +18,10 @@ function drawTimeline() {
   let raf;
   let timeLineX = 0;
 
-  const distanceBetweenNotes = 40;
   const lineHeightOffset = 1;
+  const numberOfLines = 5;
+  const distanceBetweenLines = canvas.height / numberOfLines;
+  const distanceBetweenNotes = 40;
 
   let bassClefLoaded = false;
   const bassClef = new Image();
@@ -28,6 +30,17 @@ function drawTimeline() {
     bassClef.src = isDarkMode ? 'images/bass-clef-white.svg' : 'images/bass-clef-black.svg';
     bassClef.onload = function() {
       bassClefLoaded = true;
+      cb();
+    };
+  }
+
+  let quarterNoteLoaded = false;
+  const quarterNote = new Image();
+
+  function loadQuarterNote(cb) {
+    quarterNote.src = isDarkMode ? 'images/quarter-note-white.svg' : 'images/quarter-note-black.svg';
+    quarterNote.onload = function() {
+      quarterNoteLoaded = true;
       cb();
     };
   }
@@ -52,10 +65,30 @@ function drawTimeline() {
     }
   }
 
-  function drawStaff() {
-    const numberOfLines = 5;
-    const distanceBetweenLines = canvas.height / numberOfLines;
+  function drawQuarterNote(x, y) {
+    const draw = () => {
+      const height = canvas.height / 2;
+      const width = quarterNote.height * (height / quarterNote.width);
+      const x = x - timeLineX;
 
+      ctx.setTransform(1, 0, 0, 1, x, y);
+      ctx.moveTo(0, 0);
+      ctx.drawImage(quarterNote, 0, 0, height, width);
+    };
+
+    if (!quarterNoteLoaded) {
+      loadQuarterNote(draw);
+    }
+    else {
+      draw();
+    }
+  }
+
+  function composeSong() {
+    const beatsPerMeasure = 4;
+  }
+
+  function drawStaff() {
     for (let line = 0; line < numberOfLines; line++) {
       const y = line * distanceBetweenLines + lineHeightOffset;
 
@@ -68,35 +101,8 @@ function drawTimeline() {
     }
 
     drawBassClef();
+    composeSong();
   }
-
-  // function drawYears() {
-  //   let yearIndex = 0;
-
-  //   for (let line = 1; yearIndex < years.length; line++) {
-  //     const hasYear = !(line % howOftenYearsAreShown);
-  //     const height = hasYear ? (canvas.height / 2) - fontSize : canvas.height / 2;
-  //     const x = (line * distanceBetweenLines) - timeLineX;
-  //     const y = hasYear ? (height / 2) + (fontSize / 2) : height / 2;
-
-  //     ctx.beginPath();
-  //     ctx.setTransform(1,0,0,1, x, y);
-  //     ctx.moveTo(0, 0);
-  //     ctx.lineTo(0, height);
-  //     ctx.stroke();
-  //     ctx.closePath();
-
-  //     if (hasYear) {
-  //       const year = years[yearIndex];
-  //       const label = year < 0 ? 'BCE' : 'CE';
-  //       ctx.setTransform(1,0,0,1, x, y);
-  //       ctx.textAlign = 'center';
-  //       ctx.fillStyle = foregroundColor;
-  //       ctx.fillText(`${Math.abs(year)} ${label}`, 0, 55);
-  //       yearIndex++;
-  //     }
-  //   }
-  // }
 
   function drawGradient() {
     const transparentColor = isDarkMode ? 'rgba(0,0,0,0)' : 'rgba(255,255,255,0)';
@@ -116,7 +122,6 @@ function drawTimeline() {
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // drawYears();
     drawStaff();
     drawGradient();
     timeLineX += 1;
