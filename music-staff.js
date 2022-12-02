@@ -20,6 +20,8 @@ function drawTimeline() {
 
   const lineHeightOffset = 1;
   const numberOfLines = 5;
+  // * 2 + 1 for the number of spaces between the lines
+  const maxNotePositions = numberOfLines * 2 + 1;
   const distanceBetweenLines = canvas.height / numberOfLines;
   const distanceBetweenNotes = 40;
 
@@ -110,6 +112,7 @@ function drawTimeline() {
           draw();
         }
       },
+      flip: false,
     },
     half: {
       beatsPerMeasure: 2,
@@ -123,6 +126,7 @@ function drawTimeline() {
           draw();
         }
       },
+      flip: true,
     },
     quarter: {
       beatsPerMeasure: 1,
@@ -136,6 +140,7 @@ function drawTimeline() {
           draw();
         }
       },
+      flip: true,
     },
   };
 
@@ -165,7 +170,11 @@ function drawTimeline() {
           continue;
         }
 
-        measure.push(noteType);
+        measure.push({
+          noteType,
+          position: Math.floor(Math.random() * maxNotePositions),
+        });
+
         numberOfNotes += beats;
       } while (numberOfNotes < beatsPerMeasure);
 
