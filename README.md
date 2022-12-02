@@ -9,6 +9,8 @@ An example of how to draw a scrolling music staff using JavaScript and the HTML 
 - Half note: https://commons.wikimedia.org/wiki/File:Half_note_with_upwards_stem.svg
 - Quarter note: https://commons.wikimedia.org/wiki/File:Quarter_note_with_upwards_stem.svg
 
+I created the white versions and converted them to PNGs for this project.
+
 ---
 
 Alex Seifert - https://www.alexseifert.com

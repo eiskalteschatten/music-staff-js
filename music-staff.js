@@ -20,10 +20,11 @@ function drawTimeline() {
 
   const lineHeightOffset = 1;
   const numberOfLines = 5;
-  // * 2 + 1 for the number of spaces between the lines
-  const maxNotePositions = numberOfLines * 2 + 1;
+  // * 2 for the number of spaces between the lines
+  const maxNotePositions = numberOfLines * 2;
   const distanceBetweenLines = canvas.height / numberOfLines;
-  const distanceBetweenNotes = 40;
+  const distanceBetweenNotes = 60;
+  const bassClefStartX = 150;
 
   let bassClefLoaded = false;
   const bassClef = new Image();
@@ -36,44 +37,15 @@ function drawTimeline() {
     };
   }
 
-  let wholeNoteLoaded = false;
   const wholeNote = new Image();
-
-  function loadWholeNote(cb) {
-    wholeNote.src = isDarkMode ? 'images/whole-note-white.svg' : 'images/whole-note-black.svg';
-    wholeNote.onload = function() {
-      wholeNoteLoaded = true;
-      cb();
-    };
-  }
-
-  let halfNoteLoaded = false;
   const halfNote = new Image();
-
-  function loadHalfNote(cb) {
-    halfNote.src = isDarkMode ? 'images/half-note-white.svg' : 'images/half-note-black.svg';
-    halfNote.onload = function() {
-      halfNoteLoaded = true;
-      cb();
-    };
-  }
-
-  let quarterNoteLoaded = false;
   const quarterNote = new Image();
-
-  function loadQuarterNote(cb) {
-    quarterNote.src = isDarkMode ? 'images/quarter-note-white.svg' : 'images/quarter-note-black.svg';
-    quarterNote.onload = function() {
-      quarterNoteLoaded = true;
-      cb();
-    };
-  }
 
   function drawBassClef() {
     const draw = () => {
       const height = canvas.height / 2;
       const width = bassClef.height * (height / bassClef.width);
-      const x = 150 - timeLineX;
+      const x = bassClefStartX - timeLineX;
       const y = lineHeightOffset;
 
       ctx.setTransform(1, 0, 0, 1, x, y);
@@ -90,8 +62,8 @@ function drawTimeline() {
   }
 
   function drawNote(image, x, y) {
-    const height = canvas.height / 2;
-    const width = image.height * (height / image.width);
+    const height = distanceBetweenLines + 5;
+    const width = Math.floor(image.height * (height / image.width));
     const _x = x - timeLineX;
 
     ctx.setTransform(1, 0, 0, 1, _x, y);
@@ -103,49 +75,54 @@ function drawTimeline() {
     whole: {
       beatsPerMeasure: 4,
       draw: (x, y) => {
-        const draw = () => drawNote(wholeNote, x, y);
-
-        if (!wholeNoteLoaded) {
-          loadWholeNote(draw);
-        }
-        else {
-          draw();
-        }
+        wholeNote.src = isDarkMode ? 'images/whole-note-white.png' : 'images/whole-note-black.png';
+        wholeNote.onload = function() {
+          drawNote(this, x, y);
+        };
       },
       flip: false,
+      image: wholeNote,
+      imageOffset: .5,
     },
     half: {
       beatsPerMeasure: 2,
       draw: (x, y) => {
-        const draw = () => drawNote(halfNote, x, y);
-
-        if (!halfNoteLoaded) {
-          loadHalfNote(draw);
-        }
-        else {
-          draw();
-        }
+        halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
+        halfNote.onload = function() {
+          drawNote(this, x, y);
+        };
       },
       flip: true,
+      image: halfNote,
+      imageOffset: .25,
     },
     quarter: {
       beatsPerMeasure: 1,
       draw: (x, y) => {
-        const draw = () => drawNote(quarterNote, x, y);
-
-        if (!quarterNoteLoaded) {
-          loadQuarterNote(draw);
-        }
-        else {
-          draw();
-        }
+        quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
+        quarterNote.onload = function() {
+          drawNote(this, x, y);
+        };
       },
       flip: true,
+      image: quarterNote,
+      imageOffset: .25,
     },
   };
 
   function drawMeasure(measure) {
-    console.log(measure);
+// console.log(measure);
+    const measurePadding = 50;
+    let x = (bassClefStartX + distanceBetweenNotes + measurePadding) - timeLineX;
+
+    for (const { noteType, position } of measure) {
+      const note = noteTypes[noteType];
+      x += distanceBetweenNotes + (note.image.width / 2);
+      // TODO: why 6?
+// console.log(noteType, note.image.height, note.imageOffset)
+      const y = ((distanceBetweenLines / 2) * position) - note.image.height * note.imageOffset;// - 6;
+      note.draw(x, y);
+    }
   }
 
   function generateMeasures() {
