@@ -145,7 +145,39 @@ function drawTimeline() {
   }
 
   function composeSong() {
+    const maxNumberOfMeasures = 300;
     const beatsPerMeasure = 4;
+    const beatsPerNote = {
+      whole: 4,
+      half: 2,
+      quarter: 1,
+    };
+    const noteTypes = Object.keys(beatsPerNote);
+    const measures = [];
+
+    const getRandomNote = () => {
+      const randomNoteTypeIndex = Math.floor(Math.random() * noteTypes.length);
+      return noteTypes[randomNoteTypeIndex];
+    };
+
+    for (let measure = 1; measure < maxNumberOfMeasures; measure++) {
+      let numberOfNotes = 0;
+      const notesInMeasure = [];
+
+      do {
+        const noteType = getRandomNote();
+        const note = beatsPerNote[noteType];
+
+        if (note + numberOfNotes > beatsPerMeasure) {
+          continue;
+        }
+
+        notesInMeasure.push(noteType);
+        numberOfNotes += note;
+      } while (numberOfNotes < beatsPerMeasure);
+
+      measures.push(notesInMeasure);
+    }
   }
 
   function drawStaff() {
@@ -185,13 +217,16 @@ function drawTimeline() {
     drawStaff();
     drawGradient();
     timeLineX += 1;
-    raf = window.requestAnimationFrame(animate);
+    // raf = window.requestAnimationFrame(animate);
   }
 
-  raf = window.requestAnimationFrame(animate);
+animate()
+
+  // raf = window.requestAnimationFrame(animate);
 
   // Stop the animation after 5 minutes
-  setTimeout(() => cancelAnimationFrame(raf), 300000);
+  // setTimeout(() => cancelAnimationFrame(raf), 300000);
+  setTimeout(() => cancelAnimationFrame(raf), 500);
 }
 
 window.onload = drawTimeline;
