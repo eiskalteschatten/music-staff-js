@@ -143,7 +143,7 @@ function drawTimeline() {
     console.log(measure);
   }
 
-  function composeSong() {
+  function generateMeasures() {
     const maxNumberOfMeasures = 300;
     const beatsPerMeasure = 4;
     const noteTypeKeys = Object.keys(noteTypes);
@@ -153,7 +153,7 @@ function drawTimeline() {
       return noteTypeKeys[randomNoteTypeIndex];
     };
 
-    for (let measure = 1; measure < maxNumberOfMeasures; measure++) {
+    for (let measureNumber = 1; measureNumber < maxNumberOfMeasures; measureNumber++) {
       let numberOfNotes = 0;
       const measure = [];
 
@@ -186,7 +186,7 @@ function drawTimeline() {
     }
 
     drawBassClef();
-    composeSong();
+    generateMeasures();
   }
 
   function drawGradient() {
