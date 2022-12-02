@@ -18,12 +18,17 @@ function drawTimeline() {
   let raf;
   let timeLineX = 0;
 
+  const staffPadding = 10;
   const lineHeightOffset = 1;
+  const lineHeightOffsetWithStaffPadding = staffPadding + lineHeightOffset;
   const numberOfLines = 5;
   // * 2 for the number of spaces between the lines
-  const maxNotePositions = numberOfLines * 2;
-  const distanceBetweenLines = canvas.height / numberOfLines;
+  // -2 to exclude the positions outside of the 5 staff lines:
+  // Below an offset of 1 is used in the position calculation to exclude the space above the first line
+  const maxNotePositions = (numberOfLines * 2) - 2;
+  const distanceBetweenLines = (canvas.height - staffPadding) / numberOfLines;
   const distanceBetweenNotes = 60;
+  const measurePadding = 50;
   const bassClefStartX = 150;
 
   let bassClefLoaded = false;
@@ -37,16 +42,12 @@ function drawTimeline() {
     };
   }
 
-  const wholeNote = new Image();
-  const halfNote = new Image();
-  const quarterNote = new Image();
-
   function drawBassClef() {
     const draw = () => {
       const height = canvas.height / 2;
       const width = bassClef.height * (height / bassClef.width);
       const x = bassClefStartX - timeLineX;
-      const y = lineHeightOffset;
+      const y = lineHeightOffsetWithStaffPadding;
 
       ctx.setTransform(1, 0, 0, 1, x, y);
       ctx.moveTo(0, 0);
@@ -61,67 +62,62 @@ function drawTimeline() {
     }
   }
 
-  function drawNote(image, x, y) {
+  let noteXPos = (bassClefStartX + distanceBetweenNotes + measurePadding);
+
+  function drawNote(image, position, imageOffset) {
     const height = distanceBetweenLines + 5;
     const width = Math.floor(image.height * (height / image.width));
-    const _x = x - timeLineX;
+    const y = Math.floor(((distanceBetweenLines / 2) * position) - (image.height * imageOffset) - lineHeightOffset) + lineHeightOffsetWithStaffPadding;
+    // const y = Math.floor((distanceBetweenLines / 2) - lineHeightOffset);
+console.log(image, height, width, noteXPos, y, position)
 
-    ctx.setTransform(1, 0, 0, 1, _x, y);
-    ctx.moveTo(0, 0);
+    ctx.setTransform(1, 0, 0, 1, noteXPos, y);
     ctx.drawImage(image, 0, 0, height, width);
+
+    noteXPos += distanceBetweenNotes + (image.width / 2) - timeLineX;
   }
 
   const noteTypes = {
     whole: {
       beatsPerMeasure: 4,
-      draw: (x, y) => {
+      draw: (position) => {
+        const wholeNote = new Image();
         wholeNote.src = isDarkMode ? 'images/whole-note-white.png' : 'images/whole-note-black.png';
         wholeNote.onload = function() {
-          drawNote(this, x, y);
+          drawNote(this, position, .5);
         };
       },
       flip: false,
-      image: wholeNote,
-      imageOffset: .5,
     },
-    half: {
-      beatsPerMeasure: 2,
-      draw: (x, y) => {
-        halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
-        halfNote.onload = function() {
-          drawNote(this, x, y);
-        };
-      },
-      flip: true,
-      image: halfNote,
-      imageOffset: .25,
-    },
-    quarter: {
-      beatsPerMeasure: 1,
-      draw: (x, y) => {
-        quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
-        quarterNote.onload = function() {
-          drawNote(this, x, y);
-        };
-      },
-      flip: true,
-      image: quarterNote,
-      imageOffset: .25,
-    },
+    // half: {
+    //   beatsPerMeasure: 2,
+    //   draw: (position) => {
+    //     const halfNote = new Image();
+    //     halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
+    //     halfNote.onload = function() {
+    //       drawNote(this, position, .25);
+    //     };
+    //   },
+    //   flip: true,
+    // },
+    // quarter: {
+    //   beatsPerMeasure: 1,
+    //   draw: (position) => {
+    //     const quarterNote = new Image();
+    //     quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
+    //     quarterNote.onload = function() {
+    //       drawNote(this, position, .25);
+    //     };
+    //   },
+    //   flip: true,
+    // },
   };
 
   function drawMeasure(measure) {
-// console.log(measure);
-    const measurePadding = 50;
-    let x = (bassClefStartX + distanceBetweenNotes + measurePadding) - timeLineX;
-
     for (const { noteType, position } of measure) {
+console.log(noteType, position);
       const note = noteTypes[noteType];
-      x += distanceBetweenNotes + (note.image.width / 2);
-      // TODO: why 6?
-// console.log(noteType, note.image.height, note.imageOffset)
-      const y = ((distanceBetweenLines / 2) * position) - note.image.height * note.imageOffset;// - 6;
-      note.draw(x, y);
+      note.draw(position);
     }
   }
 
@@ -149,19 +145,21 @@ function drawTimeline() {
 
         measure.push({
           noteType,
-          position: Math.floor(Math.random() * maxNotePositions),
+          // Use 1 as an offset to make sure the space above the first line of the staff isn't used
+          position: Math.floor(Math.random() * maxNotePositions) + 1,
         });
 
         numberOfNotes += beats;
       } while (numberOfNotes < beatsPerMeasure);
 
       drawMeasure(measure);
+break;
     }
   }
 
   function drawStaff() {
     for (let line = 0; line < numberOfLines; line++) {
-      const y = line * distanceBetweenLines + lineHeightOffset;
+      const y = line * distanceBetweenLines + lineHeightOffsetWithStaffPadding;
 
       ctx.beginPath();
       ctx.setTransform(1, 0, 0, 1, 0, y);
