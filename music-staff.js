@@ -18,12 +18,41 @@ function drawTimeline() {
   let raf;
   let timeLineX = 0;
 
-  const distanceBetweenLines = 50;
+  const distanceBetweenNotes = 40;
+  const lineHeightOffset = 1;
 
-  function drawStaffLines() {
+  let bassClefLoaded = false;
+  const bassClef = new Image();
+
+  function loadBassClef(cb) {
+    bassClef.src = 'images/bass-clef.svg';
+    bassClef.onload = function() {
+      bassClefLoaded = true;
+      cb();
+    };
+  }
+
+  function drawBassClef() {
+    const draw = () => {
+      const height = canvas.height / 2;
+      const width = bassClef.height * (height / bassClef.width);
+
+      ctx.setTransform(1, 0, 0, 1, 150, lineHeightOffset);
+      ctx.moveTo(0, 0);
+      ctx.drawImage(bassClef, 0, 0, height, width);
+    };
+
+    if (!bassClefLoaded) {
+      loadBassClef(draw);
+    }
+    else {
+      draw();
+    }
+  }
+
+  function drawStaff() {
     const numberOfLines = 5;
     const distanceBetweenLines = canvas.height / numberOfLines;
-    const lineHeightOffset = 1;
 
     for (let line = 0; line < numberOfLines; line++) {
       const y = line * distanceBetweenLines + lineHeightOffset;
@@ -35,6 +64,8 @@ function drawTimeline() {
       ctx.stroke();
       ctx.closePath();
     }
+
+    drawBassClef();
   }
 
   // function drawYears() {
@@ -84,7 +115,7 @@ function drawTimeline() {
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     // drawYears();
-    drawStaffLines();
+    drawStaff();
     drawGradient();
     timeLineX += 1;
     raf = window.requestAnimationFrame(animate);
