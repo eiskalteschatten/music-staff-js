@@ -87,96 +87,89 @@ function drawTimeline() {
     }
   }
 
-  function drawWholeNote(x, y) {
-    const draw = () => {
-      const height = canvas.height / 2;
-      const width = wholeNote.height * (height / wholeNote.width);
-      const x = x - timeLineX;
+  function drawNote(image, x, y) {
+    const height = canvas.height / 2;
+    const width = image.height * (height / image.width);
+    const _x = x - timeLineX;
 
-      ctx.setTransform(1, 0, 0, 1, x, y);
-      ctx.moveTo(0, 0);
-      ctx.drawImage(wholeNote, 0, 0, height, width);
-    };
-
-    if (!wholeNoteLoaded) {
-      loadWholeNote(draw);
-    }
-    else {
-      draw();
-    }
+    ctx.setTransform(1, 0, 0, 1, _x, y);
+    ctx.moveTo(0, 0);
+    ctx.drawImage(image, 0, 0, height, width);
   }
 
-  function drawHalfNote(x, y) {
-    const draw = () => {
-      const height = canvas.height / 2;
-      const width = halfNote.height * (height / halfNote.width);
-      const x = x - timeLineX;
+  const noteTypes = {
+    whole: {
+      beatsPerMeasure: 4,
+      draw: (x, y) => {
+        const draw = () => drawNote(wholeNote, x, y);
 
-      ctx.setTransform(1, 0, 0, 1, x, y);
-      ctx.moveTo(0, 0);
-      ctx.drawImage(halfNote, 0, 0, height, width);
-    };
+        if (!wholeNoteLoaded) {
+          loadWholeNote(draw);
+        }
+        else {
+          draw();
+        }
+      },
+    },
+    half: {
+      beatsPerMeasure: 2,
+      draw: (x, y) => {
+        const draw = () => drawNote(halfNote, x, y);
 
-    if (!halfNoteLoaded) {
-      loadHalfNote(draw);
-    }
-    else {
-      draw();
-    }
-  }
+        if (!halfNoteLoaded) {
+          loadHalfNote(draw);
+        }
+        else {
+          draw();
+        }
+      },
+    },
+    quarter: {
+      beatsPerMeasure: 1,
+      draw: (x, y) => {
+        const draw = () => drawNote(quarterNote, x, y);
 
-  function drawQuarterNote(x, y) {
-    const draw = () => {
-      const height = canvas.height / 2;
-      const width = quarterNote.height * (height / quarterNote.width);
-      const x = x - timeLineX;
+        if (!quarterNoteLoaded) {
+          loadQuarterNote(draw);
+        }
+        else {
+          draw();
+        }
+      },
+    },
+  };
 
-      ctx.setTransform(1, 0, 0, 1, x, y);
-      ctx.moveTo(0, 0);
-      ctx.drawImage(quarterNote, 0, 0, height, width);
-    };
-
-    if (!quarterNoteLoaded) {
-      loadQuarterNote(draw);
-    }
-    else {
-      draw();
-    }
+  function drawMeasure(measure) {
+    console.log(measure);
   }
 
   function composeSong() {
     const maxNumberOfMeasures = 300;
     const beatsPerMeasure = 4;
-    const beatsPerNote = {
-      whole: 4,
-      half: 2,
-      quarter: 1,
-    };
-    const noteTypes = Object.keys(beatsPerNote);
-    const measures = [];
+    const noteTypeKeys = Object.keys(noteTypes);
 
     const getRandomNote = () => {
-      const randomNoteTypeIndex = Math.floor(Math.random() * noteTypes.length);
-      return noteTypes[randomNoteTypeIndex];
+      const randomNoteTypeIndex = Math.floor(Math.random() * noteTypeKeys.length);
+      return noteTypeKeys[randomNoteTypeIndex];
     };
 
     for (let measure = 1; measure < maxNumberOfMeasures; measure++) {
       let numberOfNotes = 0;
-      const notesInMeasure = [];
+      const measure = [];
 
       do {
         const noteType = getRandomNote();
-        const note = beatsPerNote[noteType];
+        const beats = noteTypes[noteType].beatsPerMeasure;
 
-        if (note + numberOfNotes > beatsPerMeasure) {
+        if (beats + numberOfNotes > beatsPerMeasure) {
           continue;
         }
 
-        notesInMeasure.push(noteType);
-        numberOfNotes += note;
+        measure.push(noteType);
+        numberOfNotes += beats;
       } while (numberOfNotes < beatsPerMeasure);
 
-      measures.push(notesInMeasure);
+      drawMeasure(measure);
     }
   }
 
