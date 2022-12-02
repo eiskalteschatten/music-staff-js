@@ -68,7 +68,6 @@ function drawTimeline() {
     const height = distanceBetweenLines + 5;
     const width = Math.floor(image.height * (height / image.width));
     const y = Math.floor(((distanceBetweenLines / 2) * position) - (image.height * imageOffset) - lineHeightOffset) + lineHeightOffsetWithStaffPadding;
-    // const y = Math.floor((distanceBetweenLines / 2) - lineHeightOffset);
 console.log(image, height, width, noteXPos, y, position)
 
     ctx.setTransform(1, 0, 0, 1, noteXPos, y);
@@ -89,33 +88,32 @@ console.log(image, height, width, noteXPos, y, position)
       },
       flip: false,
     },
-    // half: {
-    //   beatsPerMeasure: 2,
-    //   draw: (position) => {
-    //     const halfNote = new Image();
-    //     halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
-    //     halfNote.onload = function() {
-    //       drawNote(this, position, .25);
-    //     };
-    //   },
-    //   flip: true,
-    // },
-    // quarter: {
-    //   beatsPerMeasure: 1,
-    //   draw: (position) => {
-    //     const quarterNote = new Image();
-    //     quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
-    //     quarterNote.onload = function() {
-    //       drawNote(this, position, .25);
-    //     };
-    //   },
-    //   flip: true,
-    // },
+    half: {
+      beatsPerMeasure: 2,
+      draw: (position) => {
+        const halfNote = new Image();
+        halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
+        halfNote.onload = function() {
+          drawNote(this, position, .45);
+        };
+      },
+      flip: true,
+    },
+    quarter: {
+      beatsPerMeasure: 1,
+      draw: (position) => {
+        const quarterNote = new Image();
+        quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
+        quarterNote.onload = function() {
+          drawNote(this, position, .45);
+        };
+      },
+      flip: true,
+    },
   };
 
   function drawMeasure(measure) {
     for (const { noteType, position } of measure) {
-console.log(noteType, position);
       const note = noteTypes[noteType];
       note.draw(position);
     }
