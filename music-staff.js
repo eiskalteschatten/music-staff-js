@@ -76,7 +76,8 @@ function drawTimeline() {
     ctx.drawImage(bassClef, 0, 0, height, width);
   }
 
-  let noteXPos = (bassClefStartX + distanceBetweenNotes + measurePadding);
+  const noteXStartPos = bassClefStartX + distanceBetweenNotes + measurePadding;
+  let noteXPos = noteXStartPos;
 
   function drawNote(image, position, imageOffset, flipOffset = undefined) {
     const height = distanceBetweenLines + 5;
@@ -99,7 +100,7 @@ function drawTimeline() {
 
     ctx.drawImage(image, 0, 0, height, width);
 
-    noteXPos += distanceBetweenNotes + (image.width / 2) - timeLineX;
+    noteXPos += distanceBetweenNotes + (image.width / 2);
   }
 
   const noteTypes = {
@@ -138,11 +139,11 @@ function drawTimeline() {
     ctx.stroke();
     ctx.closePath();
 
-    noteXPos += measurePadding * 2;
+    noteXPos += measurePadding * 2 ;
   }
 
   function generateMeasures() {
-    const maxNumberOfMeasures = 300;
+    const maxNumberOfMeasures = 100;
     const beatsPerMeasure = 4;
     const noteTypeKeys = Object.keys(noteTypes);
 
@@ -151,7 +152,7 @@ function drawTimeline() {
       return noteTypeKeys[randomNoteTypeIndex];
     };
 
-    for (let measureNumber = 1; measureNumber < maxNumberOfMeasures; measureNumber++) {
+    for (let measureNumber = 1; measureNumber <= maxNumberOfMeasures; measureNumber++) {
       let numberOfNotes = 0;
       const measure = [];
 
@@ -213,7 +214,8 @@ function drawTimeline() {
     generateMeasures();
     drawGradient();
     timeLineX += 1;
-    // raf = window.requestAnimationFrame(animate);
+    noteXPos = noteXStartPos - timeLineX;
+    raf = window.requestAnimationFrame(animate);
   }
 
   function canStartAnimation() {
@@ -229,8 +231,8 @@ function drawTimeline() {
 
 
   // Stop the animation after 5 minutes
-  setTimeout(() => cancelAnimationFrame(raf), 300000);
-  // setTimeout(() => cancelAnimationFrame(raf), 500);
+  // setTimeout(() => cancelAnimationFrame(raf), 300000);
+  setTimeout(() => cancelAnimationFrame(raf), 500);
 }
 
 window.onload = drawTimeline;
