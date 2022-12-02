@@ -64,13 +64,21 @@ function drawTimeline() {
 
   let noteXPos = (bassClefStartX + distanceBetweenNotes + measurePadding);
 
-  function drawNote(image, position, imageOffset) {
+  function drawNote(image, position, imageOffset, flipOffset = undefined) {
     const height = distanceBetweenLines + 5;
     const width = Math.floor(image.height * (height / image.width));
-    const y = Math.floor(((distanceBetweenLines / 2) * position) - (image.height * imageOffset) - lineHeightOffset) + lineHeightOffsetWithStaffPadding;
-console.log(image, height, width, noteXPos, y, position)
+    const flipNote = flipOffset && position <= 5;
+
+    const y = flipNote
+      ? Math.floor(((distanceBetweenLines / 2) * position) + (image.height * flipOffset)) - lineHeightOffsetWithStaffPadding
+      : Math.floor(((distanceBetweenLines / 2) * position) - (image.height * imageOffset)) + lineHeightOffsetWithStaffPadding;
 
     ctx.setTransform(1, 0, 0, 1, noteXPos, y);
+
+    if (flipNote) {
+      ctx.rotate(Math.PI);
+    }
+
     ctx.drawImage(image, 0, 0, height, width);
 
     noteXPos += distanceBetweenNotes + (image.width / 2) - timeLineX;
@@ -86,7 +94,6 @@ console.log(image, height, width, noteXPos, y, position)
           drawNote(this, position, .5);
         };
       },
-      flip: false,
     },
     half: {
       beatsPerMeasure: 2,
@@ -94,10 +101,9 @@ console.log(image, height, width, noteXPos, y, position)
         const halfNote = new Image();
         halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
         halfNote.onload = function() {
-          drawNote(this, position, .45);
+          drawNote(this, position, .45, .48);
         };
       },
-      flip: true,
     },
     quarter: {
       beatsPerMeasure: 1,
@@ -105,10 +111,9 @@ console.log(image, height, width, noteXPos, y, position)
         const quarterNote = new Image();
         quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
         quarterNote.onload = function() {
-          drawNote(this, position, .45);
+          drawNote(this, position, .45, .48);
         };
       },
-      flip: true,
     },
   };
 
