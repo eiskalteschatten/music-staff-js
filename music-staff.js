@@ -129,7 +129,7 @@ function drawTimeline() {
       note.draw(position);
     }
 
-    const dividerPosition = noteXPos + measurePadding;
+    const dividerPosition = noteXPos + measurePadding / 2;
 
     ctx.beginPath();
     ctx.setTransform(1, 0, 0, 1, dividerPosition, lineHeightOffsetWithStaffPadding);
