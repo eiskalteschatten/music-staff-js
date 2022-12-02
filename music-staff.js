@@ -36,8 +36,10 @@ function drawTimeline() {
     const draw = () => {
       const height = canvas.height / 2;
       const width = bassClef.height * (height / bassClef.width);
+      const x = 150 - timeLineX;
+      const y = lineHeightOffset;
 
-      ctx.setTransform(1, 0, 0, 1, 150, lineHeightOffset);
+      ctx.setTransform(1, 0, 0, 1, x, y);
       ctx.moveTo(0, 0);
       ctx.drawImage(bassClef, 0, 0, height, width);
     };
