@@ -126,6 +126,17 @@ function drawTimeline() {
       const note = noteTypes[noteType];
       note.draw(position);
     }
+
+    const dividerPosition = noteXPos + measurePadding;
+
+    ctx.beginPath();
+    ctx.setTransform(1, 0, 0, 1, dividerPosition, lineHeightOffsetWithStaffPadding);
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, canvas.height - (lineHeightOffsetWithStaffPadding * 2) - 6);
+    ctx.stroke();
+    ctx.closePath();
+
+    noteXPos += measurePadding * 2;
   }
 
   function generateMeasures() {
