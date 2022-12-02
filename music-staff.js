@@ -31,35 +31,47 @@ function drawTimeline() {
   const measurePadding = 50;
   const bassClefStartX = 150;
 
+  let wholeNoteLoaded = false;
+  const wholeNote = new Image();
+  wholeNote.src = isDarkMode ? 'images/whole-note-white.png' : 'images/whole-note-black.png';
+  wholeNote.onload = function() {
+    wholeNoteLoaded = true;
+    canStartAnimation();
+  };
+
+  let halfNoteLoaded = false;
+  const halfNote = new Image();
+  halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
+  halfNote.onload = function() {
+    halfNoteLoaded = true;
+    canStartAnimation();
+  };
+
+  let quarterNoteLoaded = false;
+  const quarterNote = new Image();
+  quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
+  quarterNote.onload = function() {
+    quarterNoteLoaded = true;
+    canStartAnimation();
+  };
+
   let bassClefLoaded = false;
   const bassClef = new Image();
-
-  function loadBassClef(cb) {
-    bassClef.src = isDarkMode ? 'images/bass-clef-white.png' : 'images/bass-clef-black.png';
-    bassClef.onload = function() {
-      bassClefLoaded = true;
-      cb();
-    };
-  }
+  bassClef.src = isDarkMode ? 'images/bass-clef-white.png' : 'images/bass-clef-black.png';
+  bassClef.onload = function() {
+    bassClefLoaded = true;
+    canStartAnimation();
+  };
 
   function drawBassClef() {
-    const draw = () => {
-      const height = canvas.height / 2;
-      const width = bassClef.height * (height / bassClef.width);
-      const x = bassClefStartX - timeLineX;
-      const y = lineHeightOffsetWithStaffPadding;
+    const height = canvas.height / 2;
+    const width = bassClef.height * (height / bassClef.width);
+    const x = bassClefStartX - timeLineX;
+    const y = lineHeightOffsetWithStaffPadding;
 
-      ctx.setTransform(1, 0, 0, 1, x, y);
-      ctx.moveTo(0, 0);
-      ctx.drawImage(bassClef, 0, 0, height, width);
-    };
-
-    if (!bassClefLoaded) {
-      loadBassClef(draw);
-    }
-    else {
-      draw();
-    }
+    ctx.setTransform(1, 0, 0, 1, x, y);
+    ctx.moveTo(0, 0);
+    ctx.drawImage(bassClef, 0, 0, height, width);
   }
 
   let noteXPos = (bassClefStartX + distanceBetweenNotes + measurePadding);
@@ -92,31 +104,19 @@ function drawTimeline() {
     whole: {
       beatsPerMeasure: 4,
       draw: (position) => {
-        const wholeNote = new Image();
-        wholeNote.src = isDarkMode ? 'images/whole-note-white.png' : 'images/whole-note-black.png';
-        wholeNote.onload = function() {
-          drawNote(this, position, .5);
-        };
+        drawNote(wholeNote, position, .5);
       },
     },
     half: {
       beatsPerMeasure: 2,
       draw: (position) => {
-        const halfNote = new Image();
-        halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
-        halfNote.onload = function() {
-          drawNote(this, position, .45, .48);
-        };
+        drawNote(halfNote, position, .45, .48);
       },
     },
     quarter: {
       beatsPerMeasure: 1,
       draw: (position) => {
-        const quarterNote = new Image();
-        quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
-        quarterNote.onload = function() {
-          drawNote(this, position, .45, .48);
-        };
+        drawNote(quarterNote, position, .45, .48);
       },
     },
   };
@@ -215,9 +215,18 @@ break;
     // raf = window.requestAnimationFrame(animate);
   }
 
-animate()
+  function canStartAnimation() {
+    if (
+      bassClefLoaded &&
+      wholeNoteLoaded &&
+      halfNoteLoaded &&
+      quarterNoteLoaded
+    ) {
+      // raf = window.requestAnimationFrame(animate);
+      animate();
+    }
+  }
 
-  // raf = window.requestAnimationFrame(animate);
 
   // Stop the animation after 5 minutes
   // setTimeout(() => cancelAnimationFrame(raf), 300000);
