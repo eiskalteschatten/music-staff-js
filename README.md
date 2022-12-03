@@ -2,6 +2,16 @@
 
 An example of how to draw a music staff with whole, half and quarter notes using JavaScript and the HTML 5 canvas tag.
 
+To run it, clone the repository and open `index.html` in your favorite browser.
+
+Here are a couple of screenshots:
+
+![Dark Mode](https://github.com/eiskalteschatten/music-staff-js/blob/main/screenshots/dark-mode.jpg?raw=true)
+*Dark Mode*
+
+
+![Light Mode](https://github.com/eiskalteschatten/music-staff-js/blob/main/screenshots/light-mode.jpg?raw=true)
+*Light Mode*
 
 ## Image Sources
 - Bass clef: https://de.wikipedia.org/wiki/Datei:FClef.svg
