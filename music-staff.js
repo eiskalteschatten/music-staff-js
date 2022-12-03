@@ -15,9 +15,6 @@ function drawTimeline() {
   ctx.strokeStyle = foregroundColor;
   ctx.font = `${fontSize}px sans-serif`;
 
-  let raf;
-  let timeLineX = 0;
-
   const staffPadding = 10;
   const lineHeightOffset = 1;
   const lineHeightOffsetWithStaffPadding = staffPadding + lineHeightOffset;
@@ -31,14 +28,14 @@ function drawTimeline() {
   const distanceBetweenLines = (canvas.height - staffPadding) / numberOfLines;
   const distanceBetweenNotes = 60;
   const measurePadding = 50;
-  const bassClefStartX = 150;
+  const bassClefStartX = 100;
 
   let wholeNoteLoaded = false;
   const wholeNote = new Image();
   wholeNote.src = isDarkMode ? 'images/whole-note-white.png' : 'images/whole-note-black.png';
   wholeNote.onload = function() {
     wholeNoteLoaded = true;
-    canStartAnimation();
+    attemptToDraw();
   };
 
   let halfNoteLoaded = false;
@@ -46,7 +43,7 @@ function drawTimeline() {
   halfNote.src = isDarkMode ? 'images/half-note-white.png' : 'images/half-note-black.png';
   halfNote.onload = function() {
     halfNoteLoaded = true;
-    canStartAnimation();
+    attemptToDraw();
   };
 
   let quarterNoteLoaded = false;
@@ -54,7 +51,7 @@ function drawTimeline() {
   quarterNote.src = isDarkMode ? 'images/quarter-note-white.png' : 'images/quarter-note-black.png';
   quarterNote.onload = function() {
     quarterNoteLoaded = true;
-    canStartAnimation();
+    attemptToDraw();
   };
 
   let bassClefLoaded = false;
@@ -62,13 +59,13 @@ function drawTimeline() {
   bassClef.src = isDarkMode ? 'images/bass-clef-white.png' : 'images/bass-clef-black.png';
   bassClef.onload = function() {
     bassClefLoaded = true;
-    canStartAnimation();
+    attemptToDraw();
   };
 
   function drawBassClef() {
     const height = canvas.height / 2;
     const width = bassClef.height * (height / bassClef.width);
-    const x = bassClefStartX - timeLineX;
+    const x = bassClefStartX;
     const y = lineHeightOffsetWithStaffPadding;
 
     ctx.setTransform(1, 0, 0, 1, x, y);
@@ -208,31 +205,19 @@ function drawTimeline() {
     ctx.closePath();
   }
 
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawStaff();
-    generateMeasures();
-    drawGradient();
-    timeLineX += 1;
-    noteXPos = noteXStartPos - timeLineX;
-    raf = window.requestAnimationFrame(animate);
-  }
-
-  function canStartAnimation() {
+  function attemptToDraw() {
     if (
       bassClefLoaded &&
       wholeNoteLoaded &&
       halfNoteLoaded &&
       quarterNoteLoaded
     ) {
-      animate();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawStaff();
+      generateMeasures();
+      drawGradient();
     }
   }
-
-
-  // Stop the animation after 5 minutes
-  // setTimeout(() => cancelAnimationFrame(raf), 300000);
-  setTimeout(() => cancelAnimationFrame(raf), 500);
 }
 
 window.onload = drawTimeline;
